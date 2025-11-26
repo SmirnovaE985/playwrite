@@ -83,3 +83,28 @@ await page1.locator('[data-test="save-order"], [data-test="save-offer"]').click(
 await expect(page1.getByText('Успешно сохранено')).toBeVisible();
 });
 
+ // https://allure.itlabs.io/project/28/test-cases/5301?treeId=58
+ test('#5301 Создание нового заказа, после закрытия старого заказа и возврата в поиск', async ({ page }) => {
+const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+  await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Новый заказ' })
+  .click();
+await page1.locator('.ant-select-selection-overflow').click();
+await page1.getByText('РЦ Тмн, 50 лет Октября, 109 ко').click();
+await page1.locator('[data-test="search-input"]').click();
+await page1.locator('[data-test="search-input"]').fill('цемент');
+await page1.locator('[data-test="search-button"]').click();
+await page1.locator('[data-test="shopping-card-button"]').first().click();
+await page1.getByRole('button', { name: 'Добавить' }).click();
+await page1.locator('[data-test="to-cart-button"]').click();
+await page1.locator('[data-test="make-order"]').click();
+await expect(page1.getByText('Заказ успешно создан')).toBeVisible();
+await page1.locator('[data-test="close-order-btn"]').click();
+await page1.getByText('OK').click();
+
+ });
+//  
+
+    // cy.contains('button', 'Перейти в поиск').click();
