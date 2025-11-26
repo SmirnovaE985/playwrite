@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { createAppeal } from '../helpers/commands';
 import { pickFirstAvailableDate } from '../helpers/commands';
+import { deleteAllPositions } from '../helpers/commands';
 
 test('создание стандартного заказа-пример', async ({ page }) => {
   const page1 = await createAppeal(page);
@@ -19,10 +20,7 @@ await page1.locator('[data-test="select-appeal"]').click();
   await page1.locator('[data-test="to-cart-button"] path').click();
   await page1.locator('[data-test="make-order"]').click();
   await expect(page1.getByText('Заказ успешно создан')).toBeVisible();
-  await page1.locator('[data-test="delete-all-position"]').click();
-  await page1.locator('[data-test="delete-all-position-ok-button"]').click();
-  await page1.locator('[data-test="save-order"], [data-test="save-offer"]').click();
-await expect(page1.getByText('Успешно сохранено')).toBeVisible();
+  await deleteAllPositions(page1);
 });
 
 //https://allure.itlabs.io/project/28/test-cases/4423?treeId=58
@@ -52,10 +50,7 @@ await page1.locator('[data-test="delivery-ttn-save"]').click();
 await page1.waitForTimeout(4000);
 await page1.locator('[data-test="link-back"]').click();
 await page1.locator('[data-test="offer-to-order"]').click();
-await page1.locator('[data-test="delete-all-position"]').click();
-await page1.locator('[data-test="delete-all-position-ok-button"]').click();
-await page1.locator('[data-test="save-order"], [data-test="save-offer"]').click();
-await expect(page1.getByText('Успешно сохранено')).toBeVisible();
+await deleteAllPositions(page1);
 });
 
 // https://allure.itlabs.io/project/28/test-cases/4609?treeId=58
@@ -77,10 +72,7 @@ await page1.locator('[data-test="to-cart-button"]').click();
 await page1.locator('[data-test="make-offer"]').click();
 await page1.locator('[data-test="offer-to-order"]').click();
 await expect(page1.getByText('Предложение переведено в заказ успешно!')).toBeVisible();
-await page1.locator('[data-test="delete-all-position"]').click();
-await page1.locator('[data-test="delete-all-position-ok-button"]').click();
-await page1.locator('[data-test="save-order"], [data-test="save-offer"]').click();
-await expect(page1.getByText('Успешно сохранено')).toBeVisible();
+await deleteAllPositions(page1);
 });
 
  // https://allure.itlabs.io/project/28/test-cases/5301?treeId=58
@@ -145,13 +137,13 @@ await expect(elements).toHaveCount(2);
 await expect(elements.first()).toBeVisible();
 await expect(elements.last()).toBeVisible();
 await page1.locator('[data-test="delete-position"]').first().click();
-const elementsAfterDelete = page1.locator('[data-test=cart-position]'); 
-  await expect(elementsAfterDelete).toHaveCount(1);
-  await expect(elementsAfterDelete).toBeVisible();
 await page1.locator('[data-test="make-order"]').click();
 await expect(page1.getByText('Заказ успешно создан')).toBeVisible();
+// и после 
+const elementsAfterDelete = page1.locator('[data-test=cart-position]'); 
+await expect(elementsAfterDelete).toHaveCount(1); 
+await expect(elementsAfterDelete).toBeVisible();
 await page1.locator('[data-test="delete-position"]').first().click();
 await page1.locator('[data-test="save-order"]').click();
 await expect(page1.getByText('Успешно сохранено')).toBeVisible();
-
  });

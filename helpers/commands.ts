@@ -44,3 +44,9 @@ export async function pickFirstAvailableDate(page: Page) {
     .click();
 }
 // преобразовать команду для удаления
+export async function deleteAllPositions(page: Page) {
+  await page.locator('[data-test="delete-all-position"]').click();
+  await page.locator('[data-test="delete-all-position-ok-button"]').click();
+  await page.locator('[data-test="save-order"], [data-test="save-offer"]').click();
+  await expect(page.getByText('Успешно сохранено')).toBeVisible();
+}
