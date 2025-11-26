@@ -5,7 +5,10 @@ export async function createAppeal(page: Page): Promise<Page> {
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
-  await page.getByText("Клиенты").click();
+  // await page.getByText("Клиенты").click();
+  const clientsLink = page.getByText("Клиенты").first();
+  await clientsLink.waitFor({ state: 'visible' });
+  await clientsLink.click();
   await page.getByRole("link", { name: "Новое обращение" }).click();
   await page
     .getByRole("textbox", { name: "Телефон" })
@@ -40,3 +43,4 @@ export async function pickFirstAvailableDate(page: Page) {
     .first()
     .click();
 }
+// преобразовать команду для удаления
