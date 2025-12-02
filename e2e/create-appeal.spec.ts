@@ -1,140 +1,99 @@
 import { test, expect } from '@playwright/test';
 import { createAppeal } from '../helpers/commands';
-import { deleteAllPositions } from '../helpers/commands';
-// 
+
+// https://allure.itlabs.io/project/28/test-cases/3242?treeId=58
+test('#3242 Создание обращения с причиной "Редактирование заказа', async ({ page }) => {
+  const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+  await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Редактирование заказа' })
+  .click();
+});
+
+ // https://allure.itlabs.io/project/28/test-cases/3244?treeId=58
+test('#3244 Создание обращения с причиной "Консультация Материалы / Услуги', async ({ page }) => {
+  const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+  await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Консультация Материалы / Услуги' })
+  .click();
+});
+
+ // https://allure.itlabs.io/project/28/test-cases/3245?treeId=58
+test('#3245 Создание обращения с причиной "Справка / Информация по заказу', async ({ page }) => {
+  const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+  await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Информация по заказу' })
+  .click();
+});
+
+ // https://allure.itlabs.io/project/28/test-cases/3243?treeId=58
+test('#3243 Создание обращения с причиной "Ошибки / ОС"', async ({ page }) => {
+  const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+  await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Регистрация ошибки/ос' })
+  .click();
+});
+
+// https://allure.itlabs.io/project/28/test-cases/3243?treeId=58 ПРОВЕРИТЬ 
+test('#3246 Создание обращения с причиной "Претензия"', async ({ page }) => {
+const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+  await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Претензия' })
+  .click();
+  await page1.waitForTimeout(3000);
+  // Переход на страницу истории обращений
+  await page1.locator('[data-test="go-appeal-history"]').click();
+ const parentElement = page.locator('div._clientAppealsHistory_vbv0y_1');
+ await page1.waitForTimeout(3000);
+});
+
+// https://allure.itlabs.io/project/28/test-cases/3247?treeId=58 
+test('#3247 Создание обращения с причиной "Соискатели"', async ({ page }) => {
+  const page1 = await createAppeal(page);
+  await page1.locator('[data-test="select-appeal"]').click();
+  await page1.locator('[data-test="select-appeal"] li')
+    .filter({ hasText: 'Соискатели' })
+    .click();
+
+});
+
+ //https://allure.itlabs.io/project/28/test-cases/3248?treeId=58
+test('#3248 Создание обращения с причиной "Прокат"', async ({ page }) => {
+  const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+  await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Прокат' })
+  .click();
+});
+
+// https://allure.itlabs.io/project/28/test-cases/3249?treeId=58
+test('#3249 Создание обращения с причиной "Водители/ЛТС/ЦТС"', async ({ page }) => {
+  const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+  await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Водители/ЛТС/ЦТС' })
+  .click();
+  await expect(page1.getByText('Предложение переведено в заказ успешно!')).toBeVisible();
+});
 
 
-
-
-
-
-
-
-
-// // https://allure.itlabs.io/project/28/test-cases/3242?treeId=58
-//   it('#3242 Создание обращения с причиной "Редактирование заказа"', () => {
-//     cy.createAppeal();
-//     cy.get('[data-test=select-appeal]').click();
-//     cy.contains('Редактирование заказа').click();
-//     cy.url().should('include', '/cart');
-//     cy.contains('Нет добавленных позиций').should('exist');
-//     cy.wait(1000);
-//     cy.visit('/home/appeal-history');
-//     cy.contains('Причина обращения').parent().contains('Редактирование заказа');
-//   });
-
-//   // https://allure.itlabs.io/project/28/test-cases/3244?treeId=58
-//   it('#3244 Создание обращения с причиной "Консультация Материалы / Услуги"', () => {
-//     cy.createAppeal();
-//     cy.get('[data-test=select-appeal]').click();
-//     cy.contains('Консультация Материалы / Услуги').click();
-//     cy.url().should('include', '/search');
-//     cy.contains('Введите поисковой запрос').should('exist');
-//     cy.contains('Укажите магазин').should('exist');
-//     cy.wait(1000);
-//     cy.visit('/home/appeal-history');
-//     cy.contains('Причина обращения')
-//       .parent()
-//       .contains('Консультация Материалы / Услуги');
-//   });
-
-//   // https://allure.itlabs.io/project/28/test-cases/3245?treeId=58
-//   it('#3245 Создание обращения с причиной "Справка / Информация по заказу"', () => {
-//     cy.createAppeal();
-//     cy.get('[data-test=select-appeal]').click();
-//     cy.contains('Справка / Информация по заказу').click();
-//     cy.url().should('include', '/searchOrder');
-//     cy.contains('Поиск заказа по номеру').should('exist');
-//     cy.wait(1000);
-//     cy.visit('/home/appeal-history');
-//     cy.contains('Причина обращения')
-//       .parent()
-//       .contains('Справка / Информация по заказу');
-//   });
-
-//   // https://allure.itlabs.io/project/28/test-cases/3243?treeId=58
-//   it('#3243 Создание обращения с причиной "Ошибки / ОС"', () => {
-//     cy.createAppeal();
-//     cy.get('[data-test=select-appeal]').click();
-//     cy.contains('Ошибки / ОС').click();
-//     cy.url().should('include', '/incident');
-//     cy.contains('Регистрация ошибки/ос').should('exist');
-//     cy.wait(1000);
-//     cy.visit('/home/appeal-history');
-//     cy.contains('Причина обращения').parent().contains('Ошибки / ОС');
-//   });
-
-//   // https://allure.itlabs.io/project/28/test-cases/3246?treeId=58
-//   it('#3246 Создание обращения с причиной "Претензия"', () => {
-//     cy.createAppeal();
-//     cy.get('[data-test=select-appeal]').click();
-//     cy.contains('Претензия').click();
-//     cy.url().should('include', '/complaint');
-//     cy.contains('Регистрация претензии').should('exist');
-//     cy.wait(1000);
-//     cy.visit('/home/appeal-history');
-//     cy.contains('Причина обращения').parent().contains('Претензия');
-//   });
-
-//   // https://allure.itlabs.io/project/28/test-cases/3247?treeId=58
-//   it('#3247 Создание обращения с причиной "Соискатели"', () => {
-//     cy.createAppeal();
-//     cy.get('[data-test=select-appeal]').click();
-//     cy.contains('Соискатели').click();
-//     cy.url().should('include', '/interview');
-//     cy.contains('Укажите вакансию').should('exist');
-//     cy.wait(1000);
-//     cy.visit('/home/appeal-history');
-//     cy.contains('Причина обращения').parent().contains('Соискатели');
-//   });
-
-//   // https://allure.itlabs.io/project/28/test-cases/3248?treeId=58
-//   it('#3248 Создание обращения с причиной "Прокат"', () => {
-//     cy.createAppeal();
-//     cy.get('[data-test=select-appeal]').click();
-//     cy.contains('Прокат').click();
-//     cy.wait(1000);
-//     cy.visit('/home/appeal-history');
-//     cy.contains('Причина обращения').parent().contains('Прокат');
-//   });
-
-//   // https://allure.itlabs.io/project/28/test-cases/3249?treeId=58
-//   it('#3249 Создание обращения с причиной "Водители/ЛТС/ЦТС"', () => {
-//     cy.createAppeal();
-//     cy.get('[data-test=select-appeal]').click();
-//     cy.contains('Водители/ЛТС/ЦТС').click();
-//     cy.wait(1000);
-//     cy.visit('/home/appeal-history');
-//     cy.contains('Причина обращения').parent().contains('Водители/ЛТС/ЦТС');
-//   });
-
-//   //https://allure.itlabs.io/project/28/test-cases/5352?treeId=58
-//   it('#5352 Процесс создания обращения клиента, с сегментом "Мастер"', () => {
-//     cy.stubWindowOpen();
-//     cy.contains('Клиенты').trigger('mouseover');
-//     cy.contains('Новое обращение').click({ force: true });
-//     cy.get('input[name="phone"]').type('9000000055');
-//     cy.get('button[type="submit"]').click();
-//     cy.get('button[data-test="select-client"]').first().click();
-//     cy.get('[data-test="client-promo-status"]').each((status) =>
-//       expect(status).have.text('Мастер'),
-//     );
-//   });
-
-  
-//   //https://allure.itlabs.io/project/28/test-cases/5264?treeId=58
-//   it('#5264 Создание нового клиента, который уже обращался на линию с сегментом мастер"', () => {
-//     cy.stubWindowOpen();
-//     cy.contains('Клиенты').trigger('mouseover');
-//     cy.contains('Новое обращение').click({ force: true });
-//     cy.get('input[name="phone"]').type('9000000055');
-//     cy.get('button[type="submit"]').click();
-//     cy.get('button[type="button"]').click();
-//     cy.get('input[type="search"]').click();
-//     cy.contains('div', 'Физическое лицо').click();
-//     cy.get('input[type="text"]').type('Ivan');
-//     cy.get('button[type="submit"]').click();
-//     cy.get('[data-test="client-promo-status"]').each((status) =>
-//       expect(status).have.text('Мастер'),
-//     );
-//   });
+//https://allure.itlabs.io/project/28/test-cases/5264?treeId=58
+test('#5264 Создание нового клиента, который уже обращался на линию с сегментом мастер"', async ({ page }) => {
+const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+await page1
+const statuses = page1.locator('[data-test="client-promo-status"]');
+await expect(statuses).toHaveCount(2);
+await expect(statuses).toContainText(['Эксперт', 'Эксперт']); 
+});
