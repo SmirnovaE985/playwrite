@@ -22,6 +22,7 @@ await page1.locator('[data-test="shopping-card-button"]').first().click();
 await page1.getByRole('button', { name: 'Добавить' }).click();
 await page1.locator('[data-test="to-cart-button"]').click();
 await page1.locator('[data-test="make-offer"]').click();
+await expect(page1.getByText('Предложение успешно создано')).toBeVisible();
 await page1.locator('[data-test="cart-to-delivery-link"]').click();
 await page1.locator('[data-test="delivery-address"]').fill('широтная');
 await page1.getByText('улица Широтная').first().click();

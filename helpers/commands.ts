@@ -15,7 +15,7 @@ export async function createAppeal(page: Page): Promise<Page> {
 
   await page
     .getByRole("textbox", { name: "Телефон" })
-    .fill("(900)-000-00-55");
+    .fill("(900)-000-00-66");
 
   const page1Promise = page.waitForEvent("popup");
   await page.getByRole("button", { name: "Создать новое обращение" }).click();
@@ -42,7 +42,7 @@ await page.goto('https://cerebro.dev.contact-center.itlabs.io/auth');
   await page.getByRole("link", { name: "Новое обращение" }).click();
   await page
     .getByRole("textbox", { name: "Телефон" })
-    .fill("(900)-000-00-55");
+    .fill("(900)-000-00-66");
 
   const page1Promise = page.waitForEvent("popup");
   await page.getByRole("button", { name: "Создать новое обращение" }).click();

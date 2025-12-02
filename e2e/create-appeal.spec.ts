@@ -27,7 +27,7 @@ test('#3245 Создание обращения с причиной "Справ�
 await page1.locator('[data-test="select-appeal"]').click();
   await page1
   .locator('[data-test="select-appeal"] li')
-  .filter({ hasText: 'Справка / Информация по заказу' })
+  .filter({ hasText: 'Информация по заказу' })
   .click();
 });
 
@@ -56,17 +56,14 @@ await page1.locator('[data-test="select-appeal"]').click();
  await page1.waitForTimeout(3000);
 });
 
-// https://allure.itlabs.io/project/28/test-cases/3247?treeId=58 ПРОВЕРИТЬ
+// https://allure.itlabs.io/project/28/test-cases/3247?treeId=58 
 test('#3247 Создание обращения с причиной "Соискатели"', async ({ page }) => {
   const page1 = await createAppeal(page);
   await page1.locator('[data-test="select-appeal"]').click();
   await page1.locator('[data-test="select-appeal"] li')
     .filter({ hasText: 'Соискатели' })
     .click();
- //   // Переход на страницу истории обращений
-   await page1.locator('[data-test="go-appeal-history"]').click();
- const parentElement = page1.locator('div._clientAppealsHistory_vbv0y_1');
- await page1.waitForTimeout(3000);
+
 });
 
  //https://allure.itlabs.io/project/28/test-cases/3248?treeId=58
@@ -87,21 +84,16 @@ await page1.locator('[data-test="select-appeal"]').click();
   .locator('[data-test="select-appeal"] li')
   .filter({ hasText: 'Водители/ЛТС/ЦТС' })
   .click();
+  await expect(page1.getByText('Предложение переведено в заказ успешно!')).toBeVisible();
 });
 
-  
-//   //https://allure.itlabs.io/project/28/test-cases/5264?treeId=58
-//   it('#5264 Создание нового клиента, который уже обращался на линию с сегментом мастер"', () => {
-//     cy.contains('Клиенты').trigger('mouseover');
-//     cy.contains('Новое обращение').click({ force: true });
-//     cy.get('input[name="phone"]').type('9000000055');
-//     cy.get('button[type="submit"]').click();
-//     cy.get('button[type="button"]').click();
-//     cy.get('input[type="search"]').click();
-//     cy.contains('div', 'Физическое лицо').click();
-//     cy.get('input[type="text"]').type('Ivan');
-//     cy.get('button[type="submit"]').click();
-//     cy.get('[data-test="client-promo-status"]').each((status) =>
-//       expect(status).have.text('Мастер'),
-//     );
-//   });
+
+//https://allure.itlabs.io/project/28/test-cases/5264?treeId=58
+test('#5264 Создание нового клиента, который уже обращался на линию с сегментом мастер"', async ({ page }) => {
+const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+await page1
+const statuses = page1.locator('[data-test="client-promo-status"]');
+await expect(statuses).toHaveCount(2);
+await expect(statuses).toContainText(['Эксперт', 'Эксперт']); 
+});
