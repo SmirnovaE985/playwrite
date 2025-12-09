@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../repository/cerebro/devops"
+		},
+		{
+			"path": "../../repository/cerebro/node_modules"
+		},
+		{
+			"path": "../../repository/cerebro/src"
+		}
+	],
+	"settings": {}
+}
