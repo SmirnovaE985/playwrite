@@ -28,7 +28,8 @@ export async function createAppeal(page: Page): Promise<Page> {
     .click();
 
   await expect(page1).toHaveURL(/\/appeal/);
-  return page1;   
+  return page1;
+     
 }
 //создание простого заказа
 export async function createOrder(page:Page) {
