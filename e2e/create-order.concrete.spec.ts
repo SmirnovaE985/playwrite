@@ -12,7 +12,6 @@ import { test, expect } from '@playwright/test';
 import { createAppeal } from '../helpers/commands';
 import { deleteAllPositions } from '../helpers/commands';
 
-
   // https://allure.itlabs.io/project/28/test-cases/6240?treeId=58
 test('#6240 создание стандартного заказа для товара, который имеет признак ГТР', async ({page}) => { 
 const page1 = await createAppeal(page);
