@@ -1,13 +1,16 @@
 import { Page, expect } from "@playwright/test";
 // хелперс на создание обращения и открытие страницы в церебро
 export async function createAppeal(page: Page): Promise<Page> {
-  await page.goto('https://cerebro.dev.contact-center.itlabs.io/auth');
+  // await page.goto('https://cerebro.dev.contact-center.itlabs.io/auth');
+await page.goto('http://localhost:3000/home');
+  
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
+
   const clientsLink = page.getByText("Клиенты").first();
   await clientsLink.waitFor({ state: 'visible' });
-  await clientsLink.click();
+  await clientsLink.click({ force: true });
 
   const newAppealLink = page.getByRole("link", { name: "Новое обращение" });
   await expect(newAppealLink).toBeVisible({ timeout: 5000 });
