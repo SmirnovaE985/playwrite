@@ -1,3 +1,12 @@
+// #4423 Создание предложения с доставкой'
+// #4609 Перевод предложения в заказ
+// #5301 Создание нового заказа, после закрытия старого заказа и возврата в поиск
+// #4605 Отмена позиции до и после создания заказа
+// 
+// 
+// 
+
+
 import { test, expect } from '@playwright/test';
 import { createAppeal } from '../helpers/commands';
 import { pickFirstAvailableDate } from '../helpers/commands';
