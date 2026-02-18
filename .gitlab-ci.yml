@@ -1,8 +1,7 @@
-stages:
-  - test
-
 playwright_regress:
   stage: test
+  tags:
+    - docker
   image: mcr.microsoft.com/playwright:v1.50.0-jammy
   variables:
     # чтобы не падало из-за лишних загрузок/телеметрии
