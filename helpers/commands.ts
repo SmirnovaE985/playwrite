@@ -8,7 +8,7 @@ export async function createAppeal(
   phone: string = "(900)-000-00-66"
 ): Promise<Page>{
 // await page.goto('https://cerebro.dev.contact-center.itlabs.io/auth'); поменять при необходимости 
-await page.goto('http://localhost:3000/home');
+await page.goto('https://cerebro.dev.contact-center.itlabs.io/home');
   
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
