@@ -3,9 +3,12 @@ import { Page, expect } from "@playwright/test";
 // ======================================
 // создание обращения и открытие страницы 
 //=======================================
-export async function createAppeal(page: Page): Promise<Page> {
+export async function createAppeal(
+  page: Page,
+  phone: string = "(900)-000-00-66"
+): Promise<Page>{
 // await page.goto('https://cerebro.dev.contact-center.itlabs.io/auth'); поменять при необходимости 
-await page.goto('http://localhost:3000/home');
+await page.goto('https://cerebro.dev.contact-center.itlabs.io/home');
   
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
@@ -18,11 +21,7 @@ await page.goto('http://localhost:3000/home');
   const newAppealLink = page.getByRole("link", { name: "Новое обращение" });
   await expect(newAppealLink).toBeVisible({ timeout: 5000 });
   await newAppealLink.click();
-
-  await page
-    .getByRole("textbox", { name: "Телефон" })
-    .fill("(900)-000-00-66");
-
+  await page.getByRole("textbox", { name: "Телефон" }).fill(phone);
   const page1Promise = page.waitForEvent("popup");
   await page.getByRole("button", { name: "Создать новое обращение" }).click();
   const page1 = await page1Promise;
@@ -93,8 +92,11 @@ export async function createOrder(
   if (makeOrder) {
     await page1.locator('[data-test="make-order"]').click();
     await expect(page1.getByText('Заказ успешно создан')).toBeVisible();
+    
   }
+ 
   return page1;
+ 
 }
 
 //====================================
@@ -289,3 +291,12 @@ if (options?.beforeMakeOrder) {
   expect(cartTotalBonusAfter).toBe(cartTotalBonusBefore);
 }
 }
+
+// 
+// шаблон для тестов
+// test('#1111 name', async ({ page }) => {
+// const page1 = await createAppeal?????(page);
+
+
+
+// });
