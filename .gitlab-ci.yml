@@ -1,0 +1,15 @@
+stages:
+  - test
+
+playwright_regress:
+  stage: test
+  image: mcr.microsoft.com/playwright:v1.50.0-jammy
+  script:
+    - npm ci
+    - npx playwright install --with-deps
+    - ./allurectl.exe watch -- npx playwright test --grep @regress
+  artifacts:
+    when: always
+    paths:
+      - allure-results/
+      - playwright-report/
