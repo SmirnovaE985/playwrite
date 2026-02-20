@@ -22,8 +22,13 @@ playwright_regress:
     - ./allurectl --version
 
   script:
-    # Важно: ALLURE_* переменные должны быть в GitLab CI/CD Variables
-    - ./allurectl watch -- npx playwright test --grep @regress
+     # Диагностика: доезжают ли переменные в job
+  - echo "ALLURE_ENDPOINT=$ALLURE_ENDPOINT"
+  - echo "ALLURE_PROJECT_ID=$ALLURE_PROJECT_ID"
+  - test -n "$ALLURE_TOKEN" && echo "ALLURE_TOKEN is set" || echo "ALLURE_TOKEN is EMPTY"
+
+  # Запуск тестов с отправкой в Allure TestOps
+  - ./allurectl watch -- npx playwright test --grep @regress
 
   artifacts:
     when: always
