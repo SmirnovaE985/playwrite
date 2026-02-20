@@ -28,7 +28,7 @@ playwright_regress:
   - test -n "$ALLURE_TOKEN" && echo "ALLURE_TOKEN is set" || echo "ALLURE_TOKEN is EMPTY"
 
   # Запуск тестов с отправкой в Allure TestOps
-  - ./allurectl watch -- npx playwright test --grep @regress
+  - ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress
 
   artifacts:
     when: always
