@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-
+const isCI = !!process.env.CI;
 
 /**
  * Read environment variables from file.
@@ -45,12 +45,22 @@ export default defineConfig({
   },
 
   /* Configure projects for major browsers */
-  projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
+  // projects: [
+  //   {
+  //     name: "chromium",
+  //     use: { ...devices["Desktop Chrome"] },
+  //   },
 
+
+projects: [
+  {
+    name: 'chromium',
+    use: {
+      ...devices['Desktop Chrome'],
+      headless: isCI ? true : false, 
+    },
+  },
+]
     // {
     //   name: "firefox",
     //   use: { ...devices["Desktop Firefox"] },
