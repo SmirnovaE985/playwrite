@@ -1,8 +1,8 @@
 // #4587 Привязка клиента к менеджеру через вкладку "мои клиенты" [ok]
 // #4592 Создание претензии [ok]
 // #4964 Регистрация Ошибки/ОС [ok]
-// #4594 Регистрация соискателя 
-// #3350 Шаблоны СМС из хэдра/корзины   //https://allure.itlabs.io/project/28/test-cases/3350?treeId=58
+// #4594 Регистрация соискателя [ok]
+// #3350 Шаблоны СМС из хэдра/корзины [ok]
 
 import { test, expect } from '@playwright/test';
 import { createAppeal } from '../helpers/commands';
@@ -160,7 +160,6 @@ async ({page}) => {
 label('tag', 'regress');   
 feature('Auth');
 const page1 = await createOrder(page);
-// await page.waitForTimeout(9000); 
 // дать доступ к буферу
 await page1.context().grantPermissions(['clipboard-read', 'clipboard-write']);
 await page1.locator('[data-icon="copy"]').click();
@@ -224,3 +223,63 @@ await page1.getByText('Боровский').first().click();
 
 });
 
+
+// https://allure.itlabs.io/project/28/test-cases/3350?treeId=58
+test('#3350 Шаблоны СМС из хэдра/корзины',
+{ tag: ['@regress'] }, 
+async ({page}) => { 
+label('tag', 'regress');   
+feature('Auth');
+const page1 = await createAppeal(page);
+await page1.locator('[data-test=select-appeal]').click();
+await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: ' Новый заказ ' })
+  .click();
+const btn = page1.getByRole('button', { name: 'Отправить СМС' });
+
+await btn.waitFor({ state: 'visible' });
+await btn.click();
+await page1.waitForTimeout(3000);
+await expect(page1.locator('input[placeholder*="Телефон"]')).toBeEnabled
+await page1.locator('input[placeholder*="Телефон"]').fill('9000000033');
+await page1.locator('[data-test=empty-form]').fill('sdfghjkl; lkkkkd9');
+await page1.locator('[data-test=send-sms-for]').click();
+await expect(page1.getByText('Сообщение успешно отправлено')).toBeVisible();
+// 
+await page1.getByText('Отправить СМС').first().click();
+await page1.waitForTimeout(3000);
+await page1.locator('[data-test=pattern-sms]').click();
+await page1.getByText('Заказ. Номер, сумма, доставка в течение дня').click();
+await page1.locator('[data-test=send-sms-for]').click();
+await expect(page1.getByText('Сообщение успешно отправлено')).toBeHidden();
+// 
+await page1.getByText('Отправить СМС').first().click();
+await page1.locator('[data-test=pattern-sms]').click();
+// Ждём, пока появится dropdown
+const option = page1.locator(
+  '.ant-select-dropdown [data-test="Контакт. Для физических лиц"]'
+);
+await option.waitFor({ state: 'visible' });
+//Скроллим к нужному элементу
+await option.scrollIntoViewIfNeeded();
+await option.click();
+await page1.locator('[data-test=send-sms-for]').click();
+await expect(page1.getByText('Сообщение успешно отправлено')).toBeHidden();
+// 
+await page1.getByText('Отправить СМС').first().click();
+await page1.waitForTimeout(3000);
+await page1.locator('[data-test=pattern-sms]').click();
+// Ждём, пока появится dropdown
+const option1 = page1.locator(
+  '.ant-select-dropdown [data-test="Интернет заказ. Доставка."]'
+);
+await option1.waitFor({ state: 'visible' });
+//Скроллим к нужному элементу
+await option1.scrollIntoViewIfNeeded();
+await option1.click();
+await page1.locator('[data-icon=close-circle]').click();
+const select = page1.locator('[data-test="pattern-sms"]');
+await expect(select).toContainText('Выберите шаблон');
+
+});
