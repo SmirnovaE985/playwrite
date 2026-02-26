@@ -3,32 +3,30 @@ playwright_regress:
   tags:
     - docker
   image: mcr.microsoft.com/playwright:v1.50.0-jammy
+
   variables:
     # чтобы не падало из-за лишних загрузок/телеметрии
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
   before_script:
     - node -v
     - npm -v
-
     # Установка зависимостей (используем package-lock.json)
     - npm ci
-
     # Если браузеры не входят/нужно переустановить:
     - npx playwright install --with-deps
-
     # Скачать allurectl под Linux (amd64)
     - curl -fsSL -o allurectl https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64
     - chmod +x allurectl
     - ./allurectl --version
 
   script:
-     # Диагностика: доезжают ли переменные в job
-  - echo "ALLURE_ENDPOINT=$ALLURE_ENDPOINT"
-  - echo "ALLURE_PROJECT_ID=$ALLURE_PROJECT_ID"
-  - test -n "$ALLURE_TOKEN" && echo "ALLURE_TOKEN is set" || echo "ALLURE_TOKEN is EMPTY"
-
-  # Запуск тестов с отправкой в Allure TestOps
-  - ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress
+    # Диагностика: доезжают ли переменные в job
+    - echo "ALLURE_ENDPOINT=$ALLURE_ENDPOINT"
+    - echo "ALLURE_PROJECT_ID=$ALLURE_PROJECT_ID"
+    - test -n "$ALLURE_TOKEN" && echo "ALLURE_TOKEN is set" || echo "ALLURE_TOKEN is EMPTY"
+    # Запуск тестов с отправкой в Allure TestOps
+    - ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress --headless
 
   artifacts:
     when: always
