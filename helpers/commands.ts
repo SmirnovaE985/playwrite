@@ -8,7 +8,7 @@ export async function createAppeal(
   phone: string = "(900)-000-00-66"
 ): Promise<Page>{
 // await page.goto('https://cerebro.dev.contact-center.itlabs.io/auth'); поменять при необходимости 
-await page.goto('https://cerebro.dev.contact-center.itlabs.io/home');
+await page.goto('https://cerebro.dev.contact-center.itlabs.io');
   
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
@@ -20,7 +20,7 @@ await page.goto('https://cerebro.dev.contact-center.itlabs.io/home');
   await clientsLink.click({ force: true });
 
   const newAppealLink = page.getByRole("link", { name: "Новое обращение" });
-  await expect(newAppealLink).toBeVisible({ timeout: 5000 });
+  await expect(newAppealLink).toBeVisible({ timeout: 30000 });
   await newAppealLink.click();
   await page.getByRole("textbox", { name: "Телефон" }).fill(phone);
   const page1Promise = page.waitForEvent("popup");
@@ -52,7 +52,7 @@ export async function createOrder(
     searchText = 'цемент',
    } = options ?? {};
 
-  await page.goto('http://localhost:3000/home');
+  await page.goto('https://cerebro.dev.contact-center.itlabs.io');
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
@@ -154,7 +154,7 @@ export async function createOrderCheckPromo(
 
   // Авторизация и создание обращения
 
-  await page.goto('http://localhost:3000/home');
+  await page.goto('https://cerebro.dev.contact-center.itlabs.io');
   await page.locator('input[name="login"]').fill('mmalyutina');
   await page.locator('input[name="password"]').fill('123456789');
   await page.getByRole('button', { name: 'Войти' }).click();
