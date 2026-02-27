@@ -1,3 +1,6 @@
+stages:
+  - test
+
 playwright_regress:
   stage: test
   tags:
@@ -5,32 +8,44 @@ playwright_regress:
   image: mcr.microsoft.com/playwright:v1.50.0-jammy
 
   variables:
-    # чтобы не падало из-за лишних загрузок/телеметрии
+    # быстрее/стабильнее в CI
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    PLAYWRIGHT_BROWSERS_PATH: "/ms-playwright"
 
   before_script:
     - node -v
     - npm -v
-    # Установка зависимостей (используем package-lock.json)
     - npm ci
-    # Если браузеры не входят/нужно переустановить:
     - npx playwright install --with-deps
-    # Скачать allurectl под Linux (amd64)
-    - curl -fsSL -o allurectl https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64
+
+    # Скачиваем allurectl (лучше фиксировать версию, чем latest)
+    - curl -fsSL -o allurectl https://github.com/allure-framework/allurectl/releases/download/2.18.0/allurectl_linux_amd64
     - chmod +x allurectl
     - ./allurectl --version
 
   script:
-    # Диагностика: доезжают ли переменные в job
+    # Диагностика переменных
     - echo "ALLURE_ENDPOINT=$ALLURE_ENDPOINT"
     - echo "ALLURE_PROJECT_ID=$ALLURE_PROJECT_ID"
     - test -n "$ALLURE_TOKEN" && echo "ALLURE_TOKEN is set" || echo "ALLURE_TOKEN is EMPTY"
-    # Запуск тестов с отправкой в Allure TestOps
-    - ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress
+
+    # Проверка доступности Allure TestOps (не валим job, просто логируем)
+    - curl -vk --connect-timeout 10 --max-time 30 "$ALLURE_ENDPOINT/api/uaa/account/me" || true
+
+    # Запуск тестов + отправка в Allure TestOps с ретраями на сетевые проблемы
+    - |
+      for i in 1 2 3 4 5; do
+        echo "Allure upload attempt $i/5"
+        ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress && exit 0
+        echo "allurectl/watch failed (attempt $i). Sleep 15s..."
+        sleep 15
+      done
+      exit 1
 
   artifacts:
     when: always
+    expire_in: 7 days
     paths:
       - allure-results/
+      - test-results/
       - playwright-report/
-    expire_in: 7 days
