@@ -2,6 +2,7 @@ stages:
   - test
 
 playwright_regress:
+  timeout: 2h
   stage: test
   tags:
     - docker
