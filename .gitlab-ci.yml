@@ -42,5 +42,3 @@ playwright_regress:
     expire_in: 7 days
     paths:
       - allure-results/
-      - test-results/
-      - playwright-report/
