@@ -219,7 +219,11 @@ await page1
   .locator('[data-test="select-appeal"] li')
   .filter({ hasText: 'Редактирование' })
   .click();
-await expect(page1.getByText('Заказ №')).toBeVisible();
+await page1.getByRole('button', { name: 'пп' }).click();
+await page1.getByRole('button', { name: 'edit' }).nth(1).click();
+await page1.getByRole('menu').getByText('Редактирование заказа').click();
+await expect(page1.getByText('Причина обращения изменена на "Редактирование заказа"')).toBeVisible();
+
 })
 
 //https://allure.itlabs.io/project/28/test-cases/5636?treeId=58 
