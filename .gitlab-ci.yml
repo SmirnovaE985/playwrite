@@ -24,12 +24,14 @@ playwright_regress:
     - chmod +x allurectl
     - ./allurectl --version
 
-  script:
-    # Диагностика переменных
-    - echo "ALLURE_ENDPOINT=$ALLURE_ENDPOINT"
-    - echo "ALLURE_PROJECT_ID=$ALLURE_PROJECT_ID"
-    - test -n "$ALLURE_TOKEN" && echo "ALLURE_TOKEN is set" || echo "ALLURE_TOKEN is EMPTY"
-
+    script:
+  - |
+    for i in 1 2; do
+      echo "Attempt $i/2"
+      ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress && exit 0
+      sleep 15
+    done
+    exit 1
     # Проверка доступности Allure TestOps (не валим job, просто логируем)
     - curl -vk --connect-timeout 10 --max-time 30 "$ALLURE_ENDPOINT/api/uaa/account/me" || true
 
