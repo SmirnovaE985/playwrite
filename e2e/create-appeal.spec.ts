@@ -240,7 +240,7 @@ test("#4576 Создание обращения - валидация (телеф
   async ({ page }) => {
     label('tag', 'regress');   
    feature('Auth');
-  await page.goto("https://cerebro.dev.contact-center.itlabs.io/home");
+  await page.goto("https://cerebro.dev.contact-center.itlabs.io");
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
@@ -284,42 +284,41 @@ test("#4576 Создание обращения - валидация (email)",
   async ({ page }) => {
     label('tag', 'regress');   
    feature('Auth');
-  await page.goto("https://cerebro.dev.contact-center.itlabs.io/home");
+  await page.goto("https://cerebro.dev.contact-center.itlabs.io");
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
-  // Переход: Клиенты -> Новое обращение
-  const clientsLink = page.getByText("Клиенты").first();
-  await clientsLink.waitFor({ state: "visible" });
-  await clientsLink.click({ force: true });
-  await page.getByRole("link", { name: "Новое обращение" }).click();
+  // Находим пункт "Клиенты" 
+  const clients = page.getByText('Клиенты', { exact: true }).first();
+// Проверяем, что он видим, открыть меню по hover
+await expect(clients).toBeVisible({ timeout: 30_000 });
+await clients.hover();
+const newAppeal = page.getByRole('link', { name: 'Новое обращение' });
+// Ждём пока элемент будет доступен
+await expect(newAppeal).toBeVisible({ timeout: 30_000 });
+await newAppeal.click();
+  // 
   const emailInput = page.locator('input[name="email"]');
   const submitBtn = page.locator('button[type="submit"]');
-
-  // 1) Пустое поле -> "Это обязательное поле"
+  //  Пустое поле -> "Это обязательное поле"
   await page.getByText("E-mail").click(); 
   await submitBtn.click();
   await expect(page.getByText("Это обязательное поле")).toBeVisible();
-
-  // 2) Слишком длинный/некорректный email -> "Укажите корректный email"
+  //  Слишком длинный/некорректный email -> "Укажите корректный email"
   await emailInput.fill(`${"s".repeat(50)}nikaniki02@mail.ru`);
   await submitBtn.click();
   await expect(page.getByText("Укажите корректный email")).toBeVisible();
-
-  // 3) grusha@@mail.ru -> "Укажите корректный email"
+  // grusha@@mail.ru -> "Укажите корректный email"
   await emailInput.fill("grusha@@mail.ru");
   await submitBtn.click();
   await expect(page.getByText("Укажите корректный email")).toBeVisible();
   // 4) Валидный email 
   await emailInput.fill("nikaniki02@mail.ru");
-
   const popupOrNull = await Promise.all([
     page.waitForEvent("popup").catch(() => null),
     submitBtn.click(),
   ]).then(([popup]) => popup);
-
   const targetPage = popupOrNull ?? page;
-
   await expect(targetPage).toHaveURL(/\/selectClient/);
   await expect(targetPage.getByText("Создание клиента")).toBeVisible();
 });
@@ -330,16 +329,25 @@ test("#4576 Создание обращения - валидация (мессе
   async ({ page }) => {
     label('tag', 'regress');   
    feature('Auth');
-  await page.goto("https://cerebro.dev.contact-center.itlabs.io/home");
+  await page.goto("https://cerebro.dev.contact-center.itlabs.io");
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
   // Переход: Клиенты -Новое обращение
-  const clientsLink = page.getByText("Клиенты").first();
-  await clientsLink.waitFor({ state: "visible" });
-  await clientsLink.click({ force: true });
-  await page.getByRole("link", { name: "Новое обращение" }).click();
-
+  // const clientsLink = page.getByText("Клиенты").first();
+  // await clientsLink.waitFor({ state: "visible" });
+  // await clientsLink.click({ force: true });
+  // await page.getByRole("link", { name: "Новое обращение" }).click();
+  // Находим пункт "Клиенты" 
+  const clients = page.getByText('Клиенты', { exact: true }).first();
+// Проверяем, что он видим, открыть меню по hover
+await expect(clients).toBeVisible({ timeout: 30_000 });
+await clients.hover();
+const newAppeal = page.getByRole('link', { name: 'Новое обращение' });
+// Ждём пока элемент будет доступен
+await expect(newAppeal).toBeVisible({ timeout: 30_000 });
+await newAppeal.click();
+  // 
   const messengerInput = page.locator('input[name="messanger"]');
   const submitBtn = page.locator('button[type="submit"]');
   // 1) Пустое поле -> "Укажите корректный номер телефона"
@@ -356,9 +364,7 @@ test("#4576 Создание обращения - валидация (мессе
     page.waitForEvent("popup").catch(() => null),
     submitBtn.click(),
   ]).then(([popup]) => popup);
-
   const targetPage = popupOrNull ?? page;
-
   await expect(targetPage).toHaveURL(/\/selectClient/);
   await expect(targetPage.getByText("Создание клиента")).toBeVisible();
 });

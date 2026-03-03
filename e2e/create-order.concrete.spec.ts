@@ -26,7 +26,10 @@ await page1
   .locator('[data-test="select-appeal"] li')
   .filter({ hasText: 'Новый заказ' })
   .click();
-  await page1.locator('.ant-select-selection-overflow').click();
+// выбрать сбытовую 
+await page1.locator('[data-test="sale-orgs"]').click();
+await page1.locator('[data-test="1000"]').getByText('СД Тюмень').click();
+await page1.locator('.ant-select-selection-overflow').click();
 await page1.getByText('РЦ Тмн, 50 лет Октября, 109 ко').click();
 await page1.locator('[data-test="search-input"]').click();
 await page1.locator('[data-test="search-input"]').fill('14904');
@@ -40,6 +43,8 @@ await page1.locator('[data-test=send-sms]').click();
 await page1.locator('[data-test=pattern-sms]').click();
 await page1.getByText('Заказ. Номер сумма, адрес самовывоза').click();
 await page1.locator('[data-test=send-sms-for]').click();
+await expect(page1.getByText('Сообщение успешно отправлено!')).toBeVisible();
+await expect(page1.locator('[data-test="delete-all-position"]')).toBeVisible();
 await deleteAllPositions(page1);
  });
 
@@ -445,3 +450,5 @@ await expect(page1.getByText('Заказ №')).toBeVisible();
 await expect(page1.getByText('10 м3. х')).toBeVisible();
 
 });
+
+

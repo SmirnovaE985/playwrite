@@ -236,13 +236,15 @@ await page1
   .locator('[data-test="select-appeal"] li')
   .filter({ hasText: ' Новый заказ ' })
   .click();
+// закрываем анимацию 
+await page1.locator('.ant-notification-notice-close').click();
 const btn = page1.getByRole('button', { name: 'Отправить СМС' });
-
 await btn.waitFor({ state: 'visible' });
 await btn.click();
 await page1.waitForTimeout(3000);
 await expect(page1.locator('input[placeholder*="Телефон"]')).toBeEnabled
 await page1.locator('input[placeholder*="Телефон"]').fill('9000000033');
+
 await page1.locator('[data-test=empty-form]').fill('sdfghjkl; lkkkkd9');
 await page1.locator('[data-test=send-sms-for]').click();
 await expect(page1.getByText('Сообщение успешно отправлено')).toBeVisible();
@@ -252,7 +254,7 @@ await page1.waitForTimeout(3000);
 await page1.locator('[data-test=pattern-sms]').click();
 await page1.getByText('Заказ. Номер, сумма, доставка в течение дня').click();
 await page1.locator('[data-test=send-sms-for]').click();
-await expect(page1.getByText('Сообщение успешно отправлено')).toBeHidden();
+await expect(page1.getByText('Сообщение успешно отправлено')).toBeVisible();
 // 
 await page1.getByText('Отправить СМС').first().click();
 await page1.locator('[data-test=pattern-sms]').click();

@@ -13,15 +13,16 @@ await page.goto('https://cerebro.dev.contact-center.itlabs.io');
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
-  await expect(page.getByText('Клиенты')).toBeVisible();
-
-  const clientsLink = page.getByText("Клиенты").first();
-  await clientsLink.waitFor({ state: 'visible' });
-  await clientsLink.click({ force: true });
-
-  const newAppealLink = page.getByRole("link", { name: "Новое обращение" });
-  await expect(newAppealLink).toBeVisible({ timeout: 30000 });
-  await newAppealLink.click();
+  // Находим пункт "Клиенты" 
+  const clients = page.getByText('Клиенты', { exact: true }).first();
+  // Проверяем, что он видим, открыть меню по hover
+await expect(clients).toBeVisible({ timeout: 30_000 });
+await clients.hover();
+const newAppeal = page.getByRole('link', { name: 'Новое обращение' });
+  // Ждём пока элемент будет доступен
+await expect(newAppeal).toBeVisible({ timeout: 30_000 });
+await newAppeal.click();
+  // 
   await page.getByRole("textbox", { name: "Телефон" }).fill(phone);
   const page1Promise = page.waitForEvent("popup");
   await page.getByRole("button", { name: "Создать новое обращение" }).click();

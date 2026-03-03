@@ -7,8 +7,8 @@ export default defineConfig({
   testDir: "./e2e",
   fullyParallel: false,
   forbidOnly: isCI,
-  retries: isCI ? 2 : 0,
-  workers: 1,
+  retries: process.env.CI ? 1 : 0,
+  workers: process.env.CI ? 3 : undefined,
 
   reporter: [
     ["list"],
@@ -16,10 +16,10 @@ export default defineConfig({
   ],
 
   use: {
-    baseURL: "https://cerebro.dev.contact-center.itlabs.io/home",
-    trace: "on-first-retry",
+    baseURL: "https://cerebro.dev.contact-center.itlabs.io",
+    trace: "off",
     screenshot: "only-on-failure",
-    video: "retain-on-failure",
+    video: "off",
     viewport: { width: 1920, height: 1200 },
     headless: true,
   },
@@ -78,7 +78,7 @@ export default defineConfig({
 //     // baseURL: 'http://localhost:3000',
 
 //     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-//     baseURL: 'https://cerebro.dev.contact-center.itlabs.io/home',  
+//     baseURL: 'https://cerebro.dev.contact-center.itlabs.io',  
 //     trace: "on-first-retry",
 //     screenshot: 'only-on-failure',
 //     video: 'retain-on-failure',
