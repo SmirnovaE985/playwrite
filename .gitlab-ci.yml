@@ -18,32 +18,24 @@ playwright_regress:
     - npm -v
     - npm ci
     - npx playwright install --with-deps
-
     # Скачиваем allurectl (лучше фиксировать версию, чем latest)
     - curl -fsSL -o allurectl https://github.com/allure-framework/allurectl/releases/download/2.18.0/allurectl_linux_amd64
     - chmod +x allurectl
     - ./allurectl --version
 
-    script:
-  - |
-    for i in 1 2; do
-      echo "Attempt $i/2"
-      ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress && exit 0
-      sleep 15
-    done
-    exit 1
+  script:
     # Проверка доступности Allure TestOps (не валим job, просто логируем)
     - curl -vk --connect-timeout 10 --max-time 30 "$ALLURE_ENDPOINT/api/uaa/account/me" || true
 
-    # Запуск тестов + отправка в Allure TestOps с ретраями на сетевые проблемы
+    # Запуск тестов + отправка в Allure TestOps (2 попытки)
     - |
-      for i in 1 2 3 4 5; do
-        echo "Allure upload attempt $i/5"
-        ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress && exit 0
-        echo "allurectl/watch failed (attempt $i). Sleep 15s..."
-        sleep 15
-      done
-      exit 1
+        for i in 1 2; do
+          echo "Attempt $i/2"
+          ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress && exit 0
+          echo "Attempt $i failed, sleep 15s..."
+          sleep 15
+        done
+        exit 1
 
   artifacts:
     when: always
