@@ -2,14 +2,13 @@ stages:
   - test
 
 playwright_regress:
-  timeout: 2h
   stage: test
+  timeout: 2h
   tags:
     - docker
   image: mcr.microsoft.com/playwright:v1.50.0-jammy
 
   variables:
-    # быстрее/стабильнее в CI
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
     PLAYWRIGHT_BROWSERS_PATH: "/ms-playwright"
 
@@ -18,24 +17,16 @@ playwright_regress:
     - npm -v
     - npm ci
     - npx playwright install --with-deps
-    # Скачиваем allurectl (лучше фиксировать версию, чем latest)
     - curl -fsSL -o allurectl https://github.com/allure-framework/allurectl/releases/download/2.18.0/allurectl_linux_amd64
     - chmod +x allurectl
     - ./allurectl --version
 
   script:
-    # Проверка доступности Allure TestOps (не валим job, просто логируем)
+    # Просто логируем доступность Allure (не валим job)
     - curl -vk --connect-timeout 10 --max-time 30 "$ALLURE_ENDPOINT/api/uaa/account/me" || true
 
-    # Запуск тестов + отправка в Allure TestOps (2 попытки)
-    - |
-        for i in 1 2; do
-          echo "Attempt $i/2"
-          ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress && exit 0
-          echo "Attempt $i failed, sleep 15s..."
-          sleep 15
-        done
-        exit 1
+    # Запуск тестов + отправка результатов в Allure TestOps
+    - ./allurectl watch -- npx playwright test -c playwright.config.ts --project=chromium --grep @regress
 
   artifacts:
     when: always
