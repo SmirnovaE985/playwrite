@@ -12,9 +12,9 @@ await page.goto('https://cerebro.dev.contact-center.itlabs.io');
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
+  // await page.locator('.ant-notification-notice-close').first().click();
+  // await page.locator('.ant-notification-notice-close').last().click();
   // Находим пункт "Клиенты" 
-   await page.locator('.ant-notification-notice-close').first().click();
-    await page.locator('.ant-notification-notice-close').last().click();
    await page.getByText("Клиенты").hover({ force: true });
    await page.getByText("Клиенты").click();
    const newAppeal = page.getByRole('link', { name: 'Новое обращение' });
@@ -56,10 +56,15 @@ export async function createOrder(
   await page.locator('input[name="login"]').fill("mmalyutina");
   await page.locator('input[name="password"]').fill("123456789");
   await page.getByRole("button", { name: "Войти" }).click();
-  await page.locator('.ant-notification-notice-close').first().click();
-  await page.locator('.ant-notification-notice-close').last().click();
-  await page.getByText("Клиенты").first().click();
-  await page.getByRole("link", { name: "Новое обращение" }).click();
+  //  await page.locator('.ant-notification-notice-close').first().click();
+  // await page.locator('.ant-notification-notice-close').last().click();
+  // Находим пункт "Клиенты" 
+   await page.getByText("Клиенты").hover({ force: true });
+   await page.getByText("Клиенты").click();
+   const newAppeal = page.getByRole('link', { name: 'Новое обращение' });
+  // Ждём пока элемент будет доступен
+await expect(newAppeal).toBeVisible();
+await newAppeal.click();
   await page.getByRole("textbox", { name: "Телефон" }).fill("(900)-000-00-66");
 
   const page1Promise = page.waitForEvent("popup");

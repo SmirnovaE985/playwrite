@@ -101,76 +101,56 @@ await page1.locator('[data-test="make-order"]').click();
 await expect(page1.getByText('Заказ успешно создан')).toBeVisible();
  });
 
-// //https://allure.itlabs.io/project/28/test-cases/4251?treeId=58
-// test('#4251 Создать заказ бетона с несколькими машинами',
-// { tag: ['@regress'] }, 
-// async ({page}) => { 
-// allureLabel('tag', 'regress');
-// allureFeature('Auth');      
-// const page1 = await createAppeal(page);
-// await page1.locator('[data-test="select-appeal"]').click();
-// await page1
-//   .locator('[data-test="select-appeal"] li')
-//   .filter({ hasText: 'Новый заказ' })
-//   .click();
-// await page1.locator('[data-test="search-input"]').click();
-// await page1.locator('[data-test="search-input"]').fill('бетон');
-// // /////////////////////////////////////
-// let pageModal;
+//https://allure.itlabs.io/project/28/test-cases/4251?treeId=58
+test('#4251 Создать заказ бетона с несколькими машинами',
+{ tag: ['@regress'] }, 
+async ({page}) => { 
+allureLabel('tag', 'regress');
+allureFeature('Auth');      
+const page1 = await createAppeal(page);
+await page1.locator('[data-test="select-appeal"]').click();
+await page1
+  .locator('[data-test="select-appeal"] li')
+  .filter({ hasText: 'Новый заказ' })
+  .click();
+await page1.locator('[data-test="search-input"]').click();
+await page1.locator('[data-test="search-input"]').fill('бетон');
+//
+let attempt = 0;
+await expect(async () => {
+  attempt++;
+  // перед 2-й и следующими попытками
+  if (attempt > 1) {
+    const close = page1.locator('[data-icon="close"]');
+    if (await close.isVisible().catch(() => false)) {
+      await close.click();
+      //  дождаться закрытия
+      await expect(close).toBeHidden({ timeout: 5000 });
+    }
+  }
+  await addConcrete(page1);
+}).toPass();
+//
+await page1.locator('.ant-btn-primary', { hasText: 'Добавить' }).click();
+const cartBtn = page1.locator('[data-test="to-cart-button"]');
+await cartBtn.click();
+const newOrder = page1.locator('[data-test="make-order"]');
+try {
+  await newOrder.waitFor({ timeout: 5000 });
+} catch (e) {
+  await cartBtn.click();
+  await newOrder.waitFor({ timeout: 5000 });
+}
 
-// const modal = page1.locator('.ant-modal'); // модалка AntD (видимая часть)
-// const closeBtn = modal.locator('button.ant-modal-close'); // именно кнопка-крестик
+await page1.locator('[data-test="make-order"]').click();
+await expect(page1.locator('[data-test="save-order"]')).toBeEnabled();
+// проверяем, что в контейнере доставок, сохранено три элемента
+const deliveriesContainer = page1.locator('div[class^="_deliveries-container_"]');
+const deliveries = deliveriesContainer.locator('div[class^="_delivery_"]');
 
-// for (let attempt = 1; attempt <= 2; attempt++) {
-//   pageModal = await addConcrete(page1);
-
-//   const addBtn2 = page1
-//     .locator('.ant-modal-footer')
-//     .getByRole('button', { name: 'Добавить' });
-
-//   if (await addBtn2.isEnabled()) {
-//     await addBtn2.click();
-//     break;
-//   }
-
-//   if (attempt === 1) {
-//     // 1) пробуем закрыть по крестику
-//     await closeBtn.waitFor({ state: 'visible', timeout: 5000 });
-//     await closeBtn.click({ force: true });
-
-//     // 2) ждём исчезновения содержимого модалки (надежнее чем wrap)
-//     await modal.waitFor({ state: 'hidden', timeout: 10_000 }).catch(async () => {
-//       // fallback: если почему-то не закрылось — пробуем ESC и ждём ещё раз
-//       await page1.keyboard.press('Escape');
-//       await modal.waitFor({ state: 'hidden', timeout: 10_000 });
-//     });
-
-//     continue;
-//   }
-
-//   throw new Error('Кнопка "Добавить" не активна после второй попытки');
-// }
-
-// // //////////////////////////////////////////
-// const cartBtn = page1.locator('[data-test="to-cart-button"]');
-// await cartBtn.click();
-// const newOrder = page1.locator('[data-test="make-order"]');
-// try {
-//   await newOrder.waitFor({ timeout: 5000 });
-// } catch (e) {
-//   await cartBtn.click();
-//   await newOrder.waitFor({ timeout: 5000 });
-// }
-
-// await page1.locator('[data-test="make-order"]').click();
-// await expect(page1.locator('[data-test="save-order"]')).toBeEnabled();
-// // проверяем, что в контейнере доставок, сохранено три элемента
-// const deliveriesContainer = page1.locator('div[class^="_deliveries-container_"]');
-// const deliveries = deliveriesContainer.locator('div[class^="_delivery_"]');
-
-// await expect(deliveriesContainer).toBeVisible({ timeout: 30_000 });
-// await expect(deliveries).toHaveCount(3, { timeout: 30_000 });
-// })
+await expect(deliveriesContainer).toBeVisible({ timeout: 30_000 });
+await expect(deliveries).toHaveCount(3, { timeout: 30_000 });
+})
 
  //allure.itlabs.io/project/28/test-cases/4345?treeId=58
 test('#4345 Создать заказ с дробным числом', 
